@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fsociety</title>
+
+    <style>
+        /* CSS Code from style.css */
+        @font-face {
+            font-family: 'Hack'; /* Or another monospace font */
+            src: url('fonts/Hack-Regular.ttf') format('truetype');
+            /* Ensure 'fonts/Hack-Regular.ttf' is the correct path to your font file */
+        }
+
+        body {
+            background-color: #000;
+            color: #00FF00; /* Green text for terminal feel */
+            font-family: 'Hack', monospace;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align content to the top */
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            border: 1px solid #00FF00;
+            padding: 30px;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.8);
+            animation: flicker 1s infinite alternate; /* Subtle flicker */
+            margin-top: 50px; /* Add some space from the top */
+        }
+
+        @keyframes flicker {
+            0% { opacity: 1; }
+            50% { opacity: 0.98; }
+            100% { opacity: 1; }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .mask {
+            width: 150px;
+            height: auto;
+            filter: drop-shadow(0 0 10px #00FF00);
+            margin-bottom: 20px;
+            /* Ensure 'fsociety_mask.png' is in the same directory as this HTML file, or provide the correct path */
+        }
+
+        h1, h2 {
+            color: #FF0000; /* Red for emphasis */
+            text-shadow: 0 0 5px rgba(255, 0, 0, 0.7);
+        }
+
+        .manifesto pre {
+            white-space: pre-wrap; /* Preserve formatting and wrap text */
+            word-break: break-word;
+            font-size: 1.1em;
+            line-height: 1.6;
+            border-left: 2px solid #00FF00;
+            padding-left: 15px;
+            margin-top: 30px;
+            display: none; /* Hidden by default, revealed by JS */
+        }
+
+        .typing-text {
+            min-height: 1.2em; /* Prevent layout shift as text types */
+            display: inline-block; /* Essential for the typing effect's cursor */
+            white-space: nowrap; /* Keep text on one line during typing */
+            overflow: hidden; /* Hide overflow until fully typed */
+            border-right: 0.15em solid #00FF00; /* Simulate a blinking cursor */
+            animation: blinking-cursor 0.75s step-end infinite;
+        }
+
+        @keyframes blinking-cursor {
+            from, to { border-color: transparent; }
+            50% { border-color: #00FF00; }
+        }
+
+        .video-broadcast {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            background-color: #333;
+            border: 1px solid #00FF00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+
+        .video-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: contrast(1.5) grayscale(0.5); /* Glitchy effect */
+            /* Ensure 'fsociety_broadcast_glitch.mp4' is in the same directory, or provide the correct path */
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 0.9em;
+            color: #AAA;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="fsociety_mask.png" alt="fsociety mask" class="mask">
+            </header>
+
+        <section class="manifesto">
+            <p class="typing-text"></p>
+            <pre>
+                The world itself is just one big hoax.
+                Spamming each other with our burning commentary of bullshit masquerading as insight.
+                Our social media faking as intimacy.
+                Or is it that we voted for this?
+                Not with our rigged elections but with our things, our property, our money.
+                I'm not saying anything new.
+                We all know why we do this. Not because Hunger Games books makes us happy.
+                But because we want to be sedated.
+                Because it's painful not to pretend.
+                Because we're cowards.
+            </pre>
+        </section>
+
+        <section class="video-broadcast">
+            <h2>Our Message</h2>
+            <div class="video-wrapper">
+                <video controls autoplay muted loop>
+                    <source src="fsociety_broadcast_glitch.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; fsociety. We are legion.</p>
+        </footer>
+    </div>
+
+    <script>
+        // JavaScript Code from script.js
+        const typingElement = document.querySelector('.typing-text');
+        const helloFriendText = "Hello, friend.";
+        let i = 0;
+        let speed = 70; // Milliseconds per character
+
+        function typeWriter() {
+            if (i < helloFriendText.length) {
+                typingElement.textContent += helloFriendText.charAt(i);
+                i++;
+                setTimeout(typeWriter, speed);
+            } else {
+                // Once "Hello, friend." is fully typed, remove the cursor animation and reveal the manifesto
+                typingElement.style.borderRight = 'none'; // Remove the blinking cursor
+                typingElement.style.animation = 'none';   // Stop the animation
+                document.querySelector('.manifesto pre').style.display = 'block';
+            }
+        }
+
+        // Start the typing effect when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', typeWriter);
+    </script>
+</body>
+</html>
