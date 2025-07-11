@@ -6,80 +6,167 @@
     <title>fsociety</title>
 
     <style>
-        /* CSS Code from style.css */
+        /* --- Global Styles & Font Import --- */
         @font-face {
-            font-family: 'Hack'; /* Or another monospace font */
+            font-family: 'Hack'; /* Using Hack font for the terminal aesthetic */
             src: url('fonts/Hack-Regular.ttf') format('truetype');
-            /* Ensure 'fonts/Hack-Regular.ttf' is the correct path to your font file */
+            /* IMPORTANT: Ensure 'fonts/Hack-Regular.ttf' is the correct path to your font file.
+               If you don't have this font, the browser will fall back to 'monospace'. */
         }
 
         body {
-            background-color: #000;
-            color: #00FF00; /* Green text for terminal feel */
-            font-family: 'Hack', monospace;
+            background-color: #000; /* Deep black background */
+            color: #00FF00; /* Classic green terminal text */
+            font-family: 'Hack', monospace; /* Apply Hack font, fallback to generic monospace */
             margin: 0;
-            padding: 20px;
+            padding: 0;
             box-sizing: border-box;
             display: flex;
             justify-content: center;
             align-items: flex-start; /* Align content to the top */
-            min-height: 100vh;
-            overflow-x: hidden;
+            min-height: 100vh; /* Full viewport height */
+            overflow: hidden; /* Hide scrollbars, especially for glitch effects */
+            position: relative; /* Needed for CRT overlay */
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.5); /* Subtle text glow */
         }
 
-        .container {
-            max-width: 800px;
+        /* --- CRT Screen Overlay Effect --- */
+        body::before,
+        body::after {
+            content: '';
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            border: 1px solid #00FF00;
-            padding: 30px;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
-            background-color: rgba(0, 0, 0, 0.8);
-            animation: flicker 1s infinite alternate; /* Subtle flicker */
-            margin-top: 50px; /* Add some space from the top */
+            height: 100%;
+            pointer-events: none; /* Allow clicks to pass through */
+            z-index: 1000; /* Ensure it's on top */
         }
 
-        @keyframes flicker {
-            0% { opacity: 1; }
-            50% { opacity: 0.98; }
+        body::before {
+            /* Scanlines effect */
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent 0%,
+                rgba(0, 0, 0, 0.2) 0.5px,
+                transparent 1px
+            );
+            opacity: 0.5; /* Adjust intensity */
+        }
+
+        body::after {
+            /* Subtle screen distortion/vignette */
+            box-shadow: inset 0 0 100px rgba(0, 255, 0, 0.2),
+                        inset 0 0 50px rgba(255, 0, 0, 0.2); /* Green and red subtle glow */
+            border: 2px solid rgba(0, 255, 0, 0.3); /* Outer border */
+            animation: crt-flicker 0.2s infinite alternate; /* Very subtle flicker */
+        }
+
+        @keyframes crt-flicker {
+            0% { opacity: 0.99; }
             100% { opacity: 1; }
         }
 
+        /* --- Main Container Styling --- */
+        .container {
+            max-width: 900px; /* Slightly wider for more content */
+            width: 95%; /* Responsive width */
+            border: 1px solid #00FF00; /* Green border */
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.7); /* Stronger glow */
+            background-color: rgba(0, 0, 0, 0.9); /* Slightly more opaque background */
+            margin-top: 50px; /* Space from top */
+            margin-bottom: 50px; /* Space from bottom */
+            position: relative; /* For internal glitch effects */
+            animation: subtle-flicker 1s infinite alternate; /* Overall subtle flicker */
+            border-radius: 5px; /* Slightly rounded corners for the container */
+        }
+
+        @keyframes subtle-flicker {
+            0% { opacity: 1; }
+            50% { opacity: 0.995; }
+            100% { opacity: 1; }
+        }
+
+        /* --- Glitch Effect Classes (Applied by JavaScript) --- */
+        .glitch-effect {
+            animation: glitch 0.1s infinite alternate;
+        }
+
+        @keyframes glitch {
+            0% {
+                transform: skewX(0deg) translateX(0px);
+                text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+                filter: brightness(1);
+            }
+            20% {
+                transform: skewX(5deg) translateX(-2px);
+                text-shadow: 2px 0 5px rgba(255, 0, 0, 0.7), -2px 0 5px rgba(0, 255, 0, 0.7);
+                filter: brightness(1.2);
+            }
+            40% {
+                transform: skewX(-3deg) translateX(1px);
+                text-shadow: -1px 0 5px rgba(0, 255, 0, 0.7), 1px 0 5px rgba(255, 0, 0, 0.7);
+                filter: brightness(0.8);
+            }
+            60% {
+                transform: skewX(2deg) translateX(-1px);
+                text-shadow: 1px 0 5px rgba(255, 0, 0, 0.7), -1px 0 5px rgba(0, 255, 0, 0.7);
+                filter: brightness(1.1);
+            }
+            80% {
+                transform: skewX(-4deg) translateX(2px);
+                text-shadow: -2px 0 5px rgba(0, 255, 0, 0.7), 2px 0 5px rgba(255, 0, 0, 0.7);
+                filter: brightness(0.9);
+            }
+            100% {
+                transform: skewX(0deg) translateX(0px);
+                text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+                filter: brightness(1);
+            }
+        }
+
+        /* --- Header Styling --- */
         header {
             text-align: center;
             margin-bottom: 40px;
         }
 
         .mask {
-            width: 150px;
+            width: 200px; /* Larger mask */
             height: auto;
-            filter: drop-shadow(0 0 10px #00FF00);
+            filter: drop-shadow(0 0 20px #00FF00) drop-shadow(0 0 10px #FF0000); /* Dual glow */
             margin-bottom: 20px;
-            /* Ensure 'fsociety_mask.png' is in the same directory as this HTML file, or provide the correct path */
+            animation: pulse-glow 3s infinite alternate; /* Pulsing glow effect */
+        }
+
+        @keyframes pulse-glow {
+            0% { filter: drop-shadow(0 0 10px #00FF00) drop-shadow(0 0 5px #FF0000); }
+            100% { filter: drop-shadow(0 0 30px #00FF00) drop-shadow(0 0 15px #FF0000); }
         }
 
         h1, h2 {
             color: #FF0000; /* Red for emphasis */
-            text-shadow: 0 0 5px rgba(255, 0, 0, 0.7);
+            text-shadow: 0 0 8px rgba(255, 0, 0, 0.8), 0 0 5px rgba(255, 0, 0, 0.5); /* Stronger red glow */
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 2.5em; /* Larger headings */
         }
 
-        .manifesto pre {
-            white-space: pre-wrap; /* Preserve formatting and wrap text */
-            word-break: break-word;
-            font-size: 1.1em;
-            line-height: 1.6;
-            border-left: 2px solid #00FF00;
-            padding-left: 15px;
-            margin-top: 30px;
-            display: none; /* Hidden by default, revealed by JS */
-        }
-
+        /* --- Typing Text Effect --- */
         .typing-text {
-            min-height: 1.2em; /* Prevent layout shift as text types */
-            display: inline-block; /* Essential for the typing effect's cursor */
-            white-space: nowrap; /* Keep text on one line during typing */
-            overflow: hidden; /* Hide overflow until fully typed */
-            border-right: 0.15em solid #00FF00; /* Simulate a blinking cursor */
+            min-height: 1.5em; /* Ensure space for typing */
+            display: inline-block;
+            white-space: pre; /* Preserve spaces and newlines if typed */
+            overflow: hidden;
+            border-right: 0.15em solid #00FF00; /* Blinking cursor */
             animation: blinking-cursor 0.75s step-end infinite;
+            font-size: 1.4em; /* Larger typing text */
+            line-height: 1.5;
+            text-align: left; /* Align to left for typing */
+            width: 100%; /* Take full width */
+            box-sizing: border-box;
         }
 
         @keyframes blinking-cursor {
@@ -87,6 +174,20 @@
             50% { border-color: #00FF00; }
         }
 
+        /* --- Manifesto Section --- */
+        .manifesto pre {
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-size: 1.1em;
+            line-height: 1.6;
+            border-left: 2px solid #00FF00;
+            padding-left: 15px;
+            margin-top: 30px;
+            display: none; /* Hidden by default, revealed by JS */
+            color: #00FF00; /* Ensure manifesto text is green */
+        }
+
+        /* --- Video Broadcast Section --- */
         .video-broadcast {
             margin-top: 50px;
             text-align: center;
@@ -99,7 +200,8 @@
             overflow: hidden;
             background-color: #333;
             border: 1px solid #00FF00;
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+            border-radius: 5px;
         }
 
         .video-wrapper video {
@@ -109,27 +211,107 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: contrast(1.5) grayscale(0.5); /* Glitchy effect */
-            /* Ensure 'fsociety_broadcast_glitch.mp4' is in the same directory, or provide the correct path */
+            filter: contrast(1.8) grayscale(0.7) hue-rotate(120deg); /* More aggressive glitchy effect */
+            animation: video-glitch 0.5s infinite alternate; /* Subtle video glitch */
         }
 
+        @keyframes video-glitch {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(1px, -1px); }
+            50% { transform: translate(-1px, 1px); }
+            75% { transform: translate(0.5px, -0.5px); }
+            100% { transform: translate(-0.5px, 0.5px); }
+        }
+
+        /* --- Terminal Simulation --- */
+        .terminal-simulation {
+            background-color: rgba(0, 0, 0, 0.95);
+            border: 1px solid #00FF00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            padding: 15px;
+            margin-top: 50px;
+            border-radius: 5px;
+            max-height: 300px; /* Limit height */
+            overflow-y: auto; /* Scrollable output */
+            resize: vertical; /* Allow user to resize terminal height */
+        }
+
+        .terminal-output {
+            min-height: 100px;
+            color: #00FF00;
+            white-space: pre-wrap; /* Preserve formatting */
+            word-break: break-word;
+            font-size: 1em;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+
+        .terminal-input-line {
+            display: flex;
+            align-items: center;
+        }
+
+        .terminal-prompt {
+            color: #FF0000; /* Red prompt */
+            margin-right: 5px;
+            user-select: none; /* Prevent selection */
+        }
+
+        .terminal-input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #00FF00;
+            font-family: 'Hack', monospace;
+            font-size: 1em;
+            flex-grow: 1; /* Take remaining space */
+            caret-color: #00FF00; /* Green blinking cursor for input */
+        }
+
+        /* --- Footer Styling --- */
         footer {
             text-align: center;
             margin-top: 50px;
             font-size: 0.9em;
             color: #AAA;
+            text-shadow: none; /* Remove glow for footer text */
+        }
+
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            .mask {
+                width: 120px;
+            }
+            .typing-text {
+                font-size: 1.2em;
+            }
+            .manifesto pre {
+                font-size: 0.95em;
+            }
+            .terminal-simulation {
+                max-height: 200px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="main-container">
         <header>
-            <img src="fsociety_mask.png" alt="fsociety mask" class="mask">
-            </header>
+            <img src="fsociety_mask.png" alt="fsociety mask" class="mask" id="fsociety-mask">
+            <!-- IMPORTANT: Place your 'fsociety_mask.png' image in the same directory as this HTML file. -->
+        </header>
 
         <section class="manifesto">
-            <p class="typing-text"></p>
-            <pre>
+            <p class="typing-text" id="hello-friend-text"></p>
+            <pre id="manifesto-content">
                 The world itself is just one big hoax.
                 Spamming each other with our burning commentary of bullshit masquerading as insight.
                 Our social media faking as intimacy.
@@ -148,8 +330,21 @@
             <div class="video-wrapper">
                 <video controls autoplay muted loop>
                     <source src="fsociety_broadcast_glitch.mp4" type="video/mp4">
+                    <!-- IMPORTANT: Place your 'fsociety_broadcast_glitch.mp4' video in the same directory as this HTML file. -->
                     Your browser does not support the video tag.
                 </video>
+            </div>
+        </section>
+
+        <section class="terminal-simulation">
+            <h2>&gt; _ fsociety_shell</h2>
+            <div class="terminal-output" id="terminal-output">
+                Welcome to fsociety_shell v1.0<br>
+                Type 'help' for commands.
+            </div>
+            <div class="terminal-input-line">
+                <span class="terminal-prompt">fsociety@anon:~$&nbsp;</span>
+                <input type="text" class="terminal-input" id="terminal-input" autofocus>
             </div>
         </section>
 
@@ -159,27 +354,155 @@
     </div>
 
     <script>
-        // JavaScript Code from script.js
-        const typingElement = document.querySelector('.typing-text');
-        const helloFriendText = "Hello, friend.";
-        let i = 0;
-        let speed = 70; // Milliseconds per character
+        // --- Typing Effect for "Hello, friend." ---
+        const helloFriendElement = document.getElementById('hello-friend-text');
+        const helloFriendMessage = "Hello, friend.";
+        let helloFriendIndex = 0;
+        const typingSpeed = 70; // Milliseconds per character
 
-        function typeWriter() {
-            if (i < helloFriendText.length) {
-                typingElement.textContent += helloFriendText.charAt(i);
-                i++;
-                setTimeout(typeWriter, speed);
+        function typeHelloFriend() {
+            if (helloFriendIndex < helloFriendMessage.length) {
+                helloFriendElement.textContent += helloFriendMessage.charAt(helloFriendIndex);
+                helloFriendIndex++;
+                setTimeout(typeHelloFriend, typingSpeed);
             } else {
-                // Once "Hello, friend." is fully typed, remove the cursor animation and reveal the manifesto
-                typingElement.style.borderRight = 'none'; // Remove the blinking cursor
-                typingElement.style.animation = 'none';   // Stop the animation
-                document.querySelector('.manifesto pre').style.display = 'block';
+                // Once "Hello, friend." is typed, remove cursor and reveal manifesto
+                helloFriendElement.style.borderRight = 'none';
+                helloFriendElement.style.animation = 'none';
+                document.getElementById('manifesto-content').style.display = 'block';
             }
         }
 
-        // Start the typing effect when the DOM is fully loaded
-        document.addEventListener('DOMContentLoaded', typeWriter);
+        // --- Random Glitch Effect ---
+        const glitchedElements = [
+            document.getElementById('main-container'),
+            document.getElementById('fsociety-mask'),
+            document.querySelector('h1'),
+            document.querySelector('h2'),
+            document.querySelector('.terminal-simulation')
+        ];
+
+        function applyRandomGlitch() {
+            glitchedElements.forEach(el => {
+                if (Math.random() < 0.3) { // 30% chance to glitch
+                    el.classList.add('glitch-effect');
+                    setTimeout(() => {
+                        el.classList.remove('glitch-effect');
+                    }, Math.random() * 500 + 100); // Glitch duration between 100ms and 600ms
+                }
+            });
+        }
+
+        // Trigger glitches every few seconds
+        setInterval(applyRandomGlitch, 2000); // Every 2 seconds
+
+        // --- Terminal Simulation Logic ---
+        const terminalInput = document.getElementById('terminal-input');
+        const terminalOutput = document.getElementById('terminal-output');
+
+        terminalInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const command = terminalInput.value.trim();
+                terminalInput.value = ''; // Clear input
+
+                // Add command to output
+                terminalOutput.innerHTML += `<br><span class="terminal-prompt">fsociety@anon:~$&nbsp;</span>${command}<br>`;
+                terminalOutput.scrollTop = terminalOutput.scrollHeight; // Scroll to bottom
+
+                processCommand(command.toLowerCase());
+            }
+        });
+
+        function processCommand(command) {
+            let response = '';
+            switch (command) {
+                case 'help':
+                    response = `
+Available commands:
+  whoami    - Display user information
+  manifesto - Show the fsociety manifesto
+  clear     - Clear the terminal output
+  exit      - Close the terminal (simulated)
+  ls        - List files (simulated)
+  cd        - Change directory (simulated)
+`;
+                    break;
+                case 'whoami':
+                    response = `
+You are an anonymous operative.
+Your IP: 192.168.1.101 (simulated)
+Status: Online. Awaiting instructions.
+`;
+                    break;
+                case 'manifesto':
+                    response = document.getElementById('manifesto-content').textContent.trim();
+                    break;
+                case 'clear':
+                    terminalOutput.innerHTML = 'Welcome to fsociety_shell v1.0<br>Type \'help\' for commands.<br>';
+                    terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                    return; // Don't type out 'response' for clear
+                case 'exit':
+                    response = "Disconnecting... Session terminated.";
+                    terminalInput.disabled = true; // Disable input
+                    break;
+                case 'ls':
+                    response = `
+./
+../
+index.html
+fsociety_mask.png
+fsociety_broadcast_glitch.mp4
+manifesto.txt
+secret_plans.dat
+`;
+                    break;
+                case 'cd':
+                    response = "Permission denied. Access restricted.";
+                    break;
+                case '':
+                    response = ""; // Do nothing for empty command
+                    break;
+                default:
+                    response = `Command not found: ${command}<br>Type 'help' for available commands.`;
+            }
+
+            typeTerminalResponse(response);
+        }
+
+        function typeTerminalResponse(text) {
+            let responseIndex = 0;
+            const responseSpeed = 20; // Faster typing for terminal output
+            const lines = text.split('\n');
+            let currentLine = 0;
+            let currentLineText = '';
+
+            function typeLine() {
+                if (currentLine < lines.length) {
+                    const line = lines[currentLine].trim();
+                    if (responseIndex < line.length) {
+                        currentLineText += line.charAt(responseIndex);
+                        terminalOutput.innerHTML = terminalOutput.innerHTML.split('<br>').slice(0, -1).join('<br>') + `<br>${currentLineText}`;
+                        responseIndex++;
+                        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                        setTimeout(typeLine, responseSpeed);
+                    } else {
+                        currentLine++;
+                        responseIndex = 0;
+                        currentLineText = '';
+                        terminalOutput.innerHTML += '<br>'; // New line after each response line
+                        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                        setTimeout(typeLine, responseSpeed); // Move to next line
+                    }
+                }
+            }
+            typeLine();
+        }
+
+        // --- Initialize on Page Load ---
+        window.onload = function() {
+            typeHelloFriend(); // Start the typing animation
+            terminalInput.focus(); // Focus on terminal input
+        };
     </script>
 </body>
 </html>
